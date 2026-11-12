@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meu Plano — Paulo</title>
+<meta name="theme-color" content="#0f1115">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f1115; --card:#181b22; --card2:#1f232c; --line:#2a2f3a;
+    --text:#eef0f4; --muted:#9aa3b2; --accent:#22c55e; --accent2:#16a34a;
+    --warn:#f59e0b; --blue:#3b82f6; --radius:16px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}
+  body{padding:env(safe-area-inset-top) 0 calc(78px + env(safe-area-inset-bottom)) 0;min-height:100vh}
+  .wrap{max-width:560px;margin:0 auto;padding:16px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:4px 0 14px}
+  h1{font-size:22px;margin:0;font-weight:800;letter-spacing:-.3px}
+  .sub{color:var(--muted);font-size:13px;margin-top:3px;text-transform:capitalize}
+  .pill{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:5px 9px;border-radius:999px;white-space:nowrap}
+  .pill.ok{color:var(--accent);border-color:#1f4d2f}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px}
+  .card h2{font-size:15px;margin:0 0 12px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+  .card h2 small{font-weight:500;color:var(--muted);font-size:12px}
+  .hint{color:var(--muted);font-size:12.5px;line-height:1.45;margin:0 0 10px}
+  .counter{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .counter .num{font-size:44px;font-weight:800;line-height:1}
+  .counter .num span{font-size:18px;color:var(--muted);font-weight:600}
+  .cbtn{width:56px;height:56px;border-radius:14px;border:1px solid var(--line);background:var(--card2);color:var(--text);font-size:28px;font-weight:700;cursor:pointer}
+  .cbtn.plus{background:var(--accent);border-color:var(--accent);color:#06210f}
+  .cbtn:active{transform:scale(.95)}
+  .bar{height:8px;background:var(--card2);border-radius:99px;overflow:hidden;margin-top:12px}
+  .bar>i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+  .task{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer;user-select:none}
+  .task:last-child{border-bottom:0}
+  .box{flex:0 0 26px;height:26px;border-radius:8px;border:2px solid #3a4150;display:grid;place-items:center;transition:.15s}
+  .task.done .box{background:var(--accent);border-color:var(--accent)}
+  .box svg{opacity:0;width:16px;height:16px}
+  .task.done .box svg{opacity:1}
+  .task .t{flex:1;min-width:0}
+  .task .t b{display:block;font-weight:600;font-size:14.5px}
+  .task .t span{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+  .task.done .t b{color:var(--muted);text-decoration:line-through}
+  .time{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:44px;text-align:right}
+  input[type=text],input[type=number],textarea{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px;font:inherit;font-size:16px;outline:none}
+  input:focus,textarea:focus{border-color:var(--accent)}
+  textarea{min-height:64px;resize:vertical}
+  .row{display:flex;gap:8px}
+  .btn{background:var(--accent);color:#06210f;border:0;border-radius:12px;padding:0 16px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;min-height:46px}
+  .money{position:relative}
+  .money:before{content:"R$";position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:600}
+  .money input{padding-left:40px}
+  .idea{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .idea:last-child{border-bottom:0}
+  .idea button{background:none;border:0;color:var(--muted);font-size:18px;cursor:pointer}
+  .ring{display:flex;align-items:center;gap:14px}
+  .ring svg{flex:0 0 74px}
+  .ring .big{font-size:15px;font-weight:700}
+  .ring .small{color:var(--muted);font-size:12.5px;margin-top:3px;line-height:1.4}
+  .q{margin-bottom:14px}
+  .q label{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+  .auto{font-size:12px;color:var(--accent);margin:-2px 0 6px}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .stat{background:var(--card2);border-radius:12px;padding:12px}
+  .stat b{display:block;font-size:24px;font-weight:800}
+  .stat span{color:var(--muted);font-size:12px}
+  .chart{display:flex;align-items:flex-end;gap:6px;height:120px;margin-top:6px}
+  .chart .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+  .chart .b{width:100%;background:var(--accent);border-radius:6px 6px 2px 2px;min-height:3px}
+  .chart .b.low{background:#3a4150}
+  .chart small{font-size:10.5px;color:var(--muted)}
+  .chart .v{font-size:11px;font-weight:600}
+  .paused{font-size:13.5px;color:var(--muted);line-height:1.6;margin:0;padding-left:18px}
+  .rule{background:linear-gradient(135deg,#14321f,#122a1c);border-color:#1f4d2f}
+  .rule p{margin:0;font-size:14px;line-height:1.5}
+  nav{position:fixed;left:0;right:0;bottom:0;background:rgba(15,17,21,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
+  nav button{flex:1;background:none;border:0;color:var(--muted);font:inherit;font-size:11.5px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;cursor:pointer}
+  nav button svg{width:22px;height:22px}
+  nav button.on{color:var(--accent)}
+  .view{display:none}.view.on{display:block}
+  .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(20px);background:#22c55e;color:#06210f;font-weight:700;padding:10px 16px;border-radius:12px;opacity:0;transition:.25s;pointer-events:none;font-size:14px;z-index:9}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .hero{background:linear-gradient(145deg,#1a2b1f 0%,#121820 60%,#15191f 100%);border:1px solid #284a33;border-radius:20px;padding:18px 18px 16px;margin-bottom:14px;position:relative;overflow:hidden}
+  .hero:after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#22c55e33,transparent 70%)}
+  .hero .tag{font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--accent);font-weight:700}
+  .hero .motto{font-size:24px;font-weight:800;line-height:1.15;margin:6px 0 10px;letter-spacing:-.4px}
+  .hero .quote{font-size:13.5px;color:#c9d1dc;line-height:1.45;border-left:3px solid var(--accent);padding-left:10px}
+  .rankchip{display:inline-flex;align-items:center;gap:6px;margin-top:12px;background:#0f1115aa;border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700}
+  .rankchip i{font-style:normal;color:var(--warn)}
+  .rank{display:flex;align-items:center;gap:14px}
+  .rank .badge{flex:0 0 64px;height:64px;border-radius:16px;background:linear-gradient(145deg,#3a2f12,#21190a);border:1px solid #5c4716;display:grid;place-items:center;font-size:30px}
+  .rank b{font-size:20px;font-weight:800;display:block}
+  .rank span{color:var(--muted);font-size:12.5px}
+  .ranks{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+  .ranks em{font-style:normal;font-size:11.5px;padding:4px 8px;border-radius:8px;background:var(--card2);color:var(--muted)}
+  .ranks em.got{background:#3a2f12;color:#fcd34d}
+  .edit{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+  .edit:last-child{border-bottom:0}
+  .edit input{padding:10px;font-size:15px}
+  .edit .h{flex:0 0 74px}
+  .edit button{flex:0 0 36px;height:40px;background:var(--card2);border:1px solid var(--line);color:var(--muted);border-radius:10px;font-size:18px;cursor:pointer}
+  .btn.ghost{background:var(--card2);color:var(--text);border:1px solid var(--line)}
+  .lbl{display:block;font-size:13px;font-weight:600;margin:0 0 6px;color:var(--muted)}
+  .alert{background:#2a1f0a;border:1px solid #6b4c12;border-radius:var(--radius);padding:14px 16px;margin-bottom:14px}
+  .alert b{display:block;color:#fcd34d;font-size:14.5px;margin-bottom:4px}
+  .alert p{margin:0;font-size:13.5px;color:#e8dcc2;line-height:1.45}
+  .gear{background:none;border:1px solid var(--line);color:var(--muted);border-radius:10px;width:34px;height:30px;display:grid;place-items:center;cursor:pointer;margin-top:6px;margin-left:auto}
+  .gear svg{width:17px;height:17px}
+  .hdr-r{display:flex;flex-direction:column;align-items:flex-end}
+  .funnel{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .funnel div{background:var(--card2);border-radius:12px;padding:10px 6px;text-align:center}
+  .funnel b{display:block;font-size:22px;font-weight:800}
+  .funnel span{font-size:11px;color:var(--muted)}
+  .filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:none}
+  .filters button{flex:0 0 auto;background:var(--card2);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 12px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+  .filters button.on{background:var(--accent);border-color:var(--accent);color:#06210f}
+  .client{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+  .client .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+  .client .nm{font-weight:700;font-size:15px}
+  .client .nt{color:var(--muted);font-size:12.5px;margin-top:3px;white-space:pre-wrap}
+  .client .val{font-size:12.5px;color:var(--accent);font-weight:700;margin-top:4px}
+  .stg{font-size:11px;font-weight:700;padding:4px 8px;border-radius:8px;white-space:nowrap}
+  .stg-0{background:#1e2a3d;color:#93c5fd}.stg-1{background:#2d2340;color:#c4b5fd}.stg-2{background:#3a2f12;color:#fcd34d}.stg-3{background:#14321f;color:#86efac}.stg-4{background:#2a1a1a;color:#fca5a5}
+  .client .acts{display:flex;gap:6px;margin-top:10px}
+  .client .acts button{flex:1;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 6px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+  .client .acts button.go{background:var(--accent);border-color:var(--accent);color:#06210f}
+  .client .acts button.x{flex:0 0 40px;color:var(--muted)}
+  .chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-top:10px}
+  .chk input{width:18px;height:18px;accent-color:#22c55e}
+  .form{display:grid;gap:8px}
+  .wk{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .wk button{background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:10px;width:40px;height:36px;font-size:18px;cursor:pointer}
+  .wk div{font-size:13.5px;font-weight:600;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1 id="hello">Bom dia, Paulo</h1>
+      <div class="sub" id="today"></div>
+    </div>
+    <div class="hdr-r"><div class="pill" id="sync">Carregando…</div><button class="gear" id="gear" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M1 12h3M20 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></button></div>
+  </header>
+
+  <!-- HOJE -->
+  <section class="view on" id="v-hoje">
+    <div class="hero">
+      <div class="tag">Meu lema</div>
+      <div class="motto" id="motto">No longo prazo eu não perco.</div>
+      <div class="quote" id="quote"></div>
+      <div class="rankchip" id="rankchip"></div>
+    </div>
+    <div id="weekAlert"></div>
+    <div class="card">
+      <div class="ring">
+        <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" fill="none" stroke="#2a2f3a" stroke-width="3.5"/><circle id="ringc" cx="18" cy="18" r="15.5" fill="none" stroke="#22c55e" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0 100" transform="rotate(-90 18 18)" pathLength="100"/><text id="ringt" x="18" y="21" text-anchor="middle" font-size="9" font-weight="800" fill="#eef0f4">0%</text></svg>
+        <div><div class="big" id="dayMsg">Vamos começar o dia</div><div class="small" id="daySub">Marque cada item da rotina conforme fizer.</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Negócios abordados hoje <small id="pgoal">meta: 10</small></h2>
+      <div class="counter">
+        <button class="cbtn" id="minus" aria-label="Diminuir">−</button>
+        <div class="num" id="pnum">0</div>
+        <button class="cbtn plus" id="plus" aria-label="Aumentar">+</button>
+      </div>
+      <div class="bar"><i id="pbar" style="width:0"></i></div>
+    </div>
+
+    <div class="card">
+      <h2>Rotina de hoje <small id="rcount">0/9</small></h2>
+      <div id="routine"></div>
+    </div>
+
+    <div class="card">
+      <h2>Quanto entrou hoje</h2>
+      <div class="money"><input type="number" inputmode="decimal" min="0" step="0.01" id="money" placeholder="0,00"></div>
+    </div>
+
+    <div class="card">
+      <h2>Ideia nova? Anote para depois</h2>
+      <p class="hint">Não comece agora. Anote aqui e volte para o foco. Você decide no mês 6.</p>
+      <div class="row"><input type="text" id="ideaIn" placeholder="Ex.: canal sobre…"><button class="btn" id="ideaAdd">Anotar</button></div>
+      <div id="ideas" style="margin-top:8px"></div>
+    </div>
+  </section>
+
+  <!-- CLIENTES -->
+  <section class="view" id="v-clientes">
+    <div class="card">
+      <h2>Seu funil <small id="mrr"></small></h2>
+      <div class="funnel" id="funnel"></div>
+    </div>
+    <div class="card">
+      <h2>Novo contato</h2>
+      <div class="form">
+        <input type="text" id="cName" placeholder="Nome do negócio (ex.: Clínica Sorriso)">
+        <input type="text" id="cNote" placeholder="Telefone, ramo ou observação">
+      </div>
+      <label class="chk"><input type="checkbox" id="cCount" checked> Contar como abordagem de hoje</label>
+      <button class="btn" id="cAdd" style="width:100%;margin-top:10px">Adicionar</button>
+    </div>
+    <div class="filters" id="cFilters"></div>
+    <div id="clients"></div>
+  </section>
+
+  <!-- METAS -->
+  <section class="view" id="v-metas">
+    <div class="card rule"><p><b>Regra principal:</b> nenhum projeto novo antes do primeiro faturamento recorrente. Foco em sites e automação para negócios locais de Porto Velho.</p></div>
+    <div id="goals"></div>
+    <div class="card">
+      <h2>Pausados até ter caixa</h2>
+      <ul class="paused">
+        <li>Canal dark, e-book, canal infantil, bot de live</li>
+        <li>Dropshipping, confinamento de bois, Paraguai</li>
+        <li>Hacker ético (estudar depois do mês 6)</li>
+      </ul>
+      <p class="hint" style="margin-top:10px">Apps de ASO seguem como projeto secundário (20% do tempo).</p>
+    </div>
+  </section>
+
+  <!-- DOMINGO -->
+  <section class="view" id="v-domingo">
+    <div id="weekAlert2"></div>
+    <div class="card">
+      <div class="wk"><button id="wkPrev" aria-label="Semana anterior">‹</button><div id="wkLabel"></div><button id="wkNext" aria-label="Próxima semana">›</button></div>
+      <p class="hint">Revisão de 15 minutos. Responda com honestidade, sem se culpar.</p>
+      <div id="review"></div>
+    </div>
+  </section>
+
+  <!-- PROGRESSO -->
+  <section class="view" id="v-prog">
+    <div class="card">
+      <h2>Sua patente</h2>
+      <div class="rank"><div class="badge" id="rbadge">🎖️</div><div><b id="rname">Recruta</b><span id="rnext"></span></div></div>
+      <div class="ranks" id="rlist"></div>
+    </div>
+    <div class="card">
+      <h2>Seus números</h2>
+      <div class="stats">
+        <div class="stat"><b id="sStreak">0</b><span>dias seguidos com a rotina em dia</span></div>
+        <div class="stat"><b id="sPros">0</b><span>negócios abordados (total)</span></div>
+        <div class="stat"><b id="sMoney">R$ 0</b><span>dinheiro que entrou (total)</span></div>
+        <div class="stat"><b id="sDays">0</b><span>dias com rotina completa</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Abordagens nos últimos 7 dias <small id="cgoal">meta 10/dia</small></h2>
+      <div class="chart" id="chart"></div>
+    </div>
+    <div class="card">
+      <h2>Meta do primeiro mês <small>200 abordagens</small></h2>
+      <div class="counter"><div class="num" id="m30">0<span> / 200</span></div></div>
+      <div class="bar"><i id="m30bar" style="width:0"></i></div>
+      <p class="hint" style="margin-top:10px">Conta as abordagens dos últimos 30 dias.</p>
+    </div>
+  </section>
+
+  <!-- AJUSTES -->
+  <section class="view" id="v-ajustes">
+    <div class="card">
+      <h2>Seu lema</h2>
+      <p class="hint">Aparece em destaque no topo da tela Hoje.</p>
+      <input type="text" id="sMotto" maxlength="80">
+    </div>
+    <div class="card">
+      <h2>Meta diária de abordagens</h2>
+      <input type="number" inputmode="numeric" min="1" max="100" id="sGoal">
+    </div>
+    <div class="card">
+      <h2>Sua rotina</h2>
+      <p class="hint">Edite horário e tarefa, remova com × ou adicione novas.</p>
+      <div id="sRoutine"></div>
+      <div class="row" style="margin-top:12px"><button class="btn" id="sAdd" style="flex:1">+ Adicionar tarefa</button><button class="btn ghost" id="sReset">Padrão</button></div>
+    </div>
+    <div class="card">
+      <h2>Backup dos seus dados</h2>
+      <p class="hint">Seus dados ficam salvos neste celular. Faça um backup toda semana e guarde o arquivo (no Google Drive, por exemplo). Para trocar de celular, é só restaurar.</p>
+      <div class="row"><button class="btn" id="bkDown" style="flex:1">Baixar backup</button><button class="btn ghost" id="bkUp" style="flex:1">Restaurar</button></div>
+      <input type="file" id="bkFile" accept=".json,application/json" style="display:none">
+      <p class="hint" id="bkInfo" style="margin:10px 0 0"></p>
+    </div>
+    <div class="card">
+      <h2>Frases</h2>
+      <div class="row"><button class="btn ghost" id="sQuote" style="flex:1">Mostrar outra frase agora</button></div>
+    </div>
+  </section>
+</div>
+
+<nav>
+  <button class="on" data-v="hoje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Hoje</button>
+  <button data-v="clientes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clientes</button>
+  <button data-v="metas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>Metas</button>
+  <button data-v="domingo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Domingo</button>
+  <button data-v="prog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>Progresso</button>
+
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  // ---------- dados fixos do plano ----------
+  const DEFAULT_ROUTINE = [
+    {id:"acordar", h:"6h30", t:"Acordar, água, banho e caminhada", s:"Celular só depois disso"},
+    {id:"planejar", h:"7h30", t:"Planejar o dia", s:"Escrever as 3 tarefas mais importantes"},
+    {id:"prospectar", h:"8h", t:"Prospecção (8h–11h)", s:"Abordar 10 negócios com demonstração pronta"},
+    {id:"responder", h:"11h", t:"Responder contatos", s:"WhatsApp, Workana, 99Freelas"},
+    {id:"entregar", h:"14h", t:"Entregar e produzir (14h–17h)", s:"Sites de clientes, portfólio, apps de ASO"},
+    {id:"exercicio", h:"17h", t:"Exercício ou descanso", s:"Longe da tela"},
+    {id:"estudo", h:"20h", t:"1 hora de estudo", s:"Automação, WhatsApp, IA, vendas"},
+    {id:"fechar", h:"21h", t:"Fechar o dia", s:"Conferir abordagens e dinheiro aqui no app"},
+    {id:"dormir", h:"22h30", t:"Dormir", s:"Sem rolar feed na cama"}
+  ];
+  const GOALS = [
+    {title:"Até 30 dias", items:[
+      ["g1","Escolher um nicho local (clínicas, oficinas, salões…)"],
+      ["g2","Portfólio no ar com 3 exemplos"],
+      ["g3","200 negócios abordados"],
+      ["g4","Primeiro cliente fechado, mesmo barato"]]},
+    {title:"Até 90 dias", items:[
+      ["g5","3 a 5 clientes pagando mensalidade"],
+      ["g6","3 depoimentos com resultado em números"],
+      ["g7","Primeiro cliente pagante nos apps de ASO"]]},
+    {title:"Até 180 dias", items:[
+      ["g8","Renda mensal estável que cubra as contas"],
+      ["g9","Reserva de pelo menos 3 meses de gastos"],
+      ["g10","Comprar um computador com dinheiro do trabalho"],
+      ["g11","Só então decidir qual projeto pausado retomar"]]}
+  ];
+  const QUESTIONS = [
+    ["q1","Quantos negócios abordei? (meta: 60)","pros"],
+    ["q2","Quantas conversas e orçamentos saíram disso?"],
+    ["q3","Quanto dinheiro entrou?","money"],
+    ["q4","Segui a rotina em quantos dias de 6?","days"],
+    ["q5","Comecei algum projeto novo? Se sim, por quê?"],
+    ["q6","O que funcionou e vou repetir?"],
+    ["q7","O que vou mudar na próxima semana?"]
+  ];
+  const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="#06210f" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
+
+  // ---------- utilidades de data ----------
+  const pad = n => String(n).padStart(2,"0");
+  const keyOf = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+  const addDays = (d,n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+  const monday = d => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); const w = (x.getDay()+6)%7; return addDays(x,-w); };
+  const fmtMoney = v => "R$ " + (Number(v)||0).toLocaleString("pt-BR",{minimumFractionDigits:0,maximumFractionDigits:2});
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const $ = id => document.getElementById(id);
+
+  // ---------- estado ----------
+  const LS = "plano-paulo-v1";
+  let state = {days:{}, goals:{}, ideas:[], reviews:{}, clients:[], updated:0};
+  try { const raw = localStorage.getItem(LS); if (raw) state = Object.assign(state, JSON.parse(raw)); } catch(e) {}
+
+  const setSync = (txt, ok) => { const p = $("sync"); p.textContent = txt; p.classList.toggle("ok", !!ok); };
+  function persist(){
+    state.updated = Date.now();
+    try { localStorage.setItem(LS, JSON.stringify(state)); } catch(e) {}
+
+  }
+
+  const todayKey = () => keyOf(new Date());
+  const day = k => { k = k || todayKey(); if (!state.days[k]) state.days[k] = {r:{}, p:0, m:0}; return state.days[k]; };
+  const R = () => (state.settings && Array.isArray(state.settings.routine) && state.settings.routine.length) ? state.settings.routine : DEFAULT_ROUTINE;
+  const G = () => Math.max(1, (state.settings && +state.settings.goal) || 10);
+  const dayPct = d => { const rt = R(); return d ? Math.round(rt.filter(x => d.r && d.r[x.id]).length / rt.length * 100) : 0; };
+
+  // ---------- toast ----------
+  let tt;
+  function toast(msg){ const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(()=>t.classList.remove("show"), 1800); }
+
+  // ---------- HOJE ----------
+  function renderHeader(){
+    const now = new Date(), h = now.getHours();
+    $("hello").textContent = (h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite") + ", Paulo";
+    $("today").textContent = now.toLocaleDateString("pt-BR",{weekday:"long", day:"numeric", month:"long"});
+  }
+  function renderToday(){
+    const d = day();
+    // rotina
+    $("routine").innerHTML = R().map(x =>
+      `<div class="task ${d.r[x.id]?"done":""}" data-id="${x.id}"><div class="box">${CHECK}</div><div class="t"><b>${esc(x.t||"")}</b>${x.s?`<span>${esc(x.s)}</span>`:""}</div><div class="time">${esc(x.h||"")}</div></div>`
+    ).join("");
+    const done = R().filter(x => d.r[x.id]).length;
+    $("rcount").textContent = done + "/" + R().length;
+    // abordagens
+    $("pnum").innerHTML = d.p + "<span> / " + G() + "</span>";
+    $("pgoal").textContent = "meta: " + G();
+    $("pbar").style.width = Math.min(100, d.p/G()*100) + "%";
+    renderHero(); renderWeekAlert();
+    // dinheiro
+    const mi = $("money"); if (document.activeElement !== mi) mi.value = d.m ? d.m : "";
+    // anel
+    const pct = dayPct(d);
+    $("ringc").setAttribute("stroke-dasharray", pct + " 100");
+    $("ringt").textContent = pct + "%";
+    let msg, sub;
+    if (pct === 100) { msg = "Dia completo!"; sub = "Rotina cumprida. É assim que se constrói resultado."; }
+    else if (pct >= 70) { msg = "Quase lá"; sub = "Falta pouco para fechar o dia."; }
+    else if (pct > 0) { msg = "Em andamento"; sub = "Siga a ordem: prospectar primeiro, entregar depois."; }
+    else { msg = "Vamos começar o dia"; sub = "Marque cada item da rotina conforme fizer."; }
+    if (d.p >= G() && pct < 100) sub = "Meta de abordagens batida! " + sub;
+    $("dayMsg").textContent = msg; $("daySub").textContent = sub;
+    // ideias
+    $("ideas").innerHTML = state.ideas.length ? state.ideas.map((it,i) =>
+      `<div class="idea"><span>${esc(it.t)}</span><button data-i="${i}" aria-label="Remover">×</button></div>`).join("")
+      : '<p class="hint" style="margin:6px 0 0">Nenhuma ideia anotada.</p>';
+  }
+
+  $("routine").addEventListener("click", e => {
+    const el = e.target.closest(".task"); if (!el) return;
+    const d = day(), id = el.dataset.id;
+    d.r[id] = !d.r[id]; if (!d.r[id]) delete d.r[id];
+    const before = dayPct(d);
+    persist(); renderToday();
+    if (before === 100) toast("Dia completo! 💪");
+  });
+  $("plus").addEventListener("click", () => { const d = day(); d.p++; persist(); renderToday(); if (d.p === G()) toast("Meta batida! Missão do dia cumprida."); });
+  $("minus").addEventListener("click", () => { const d = day(); if (d.p > 0) { d.p--; persist(); renderToday(); } });
+  $("money").addEventListener("input", e => { const v = parseFloat(String(e.target.value).replace(",", ".")); day().m = isNaN(v) ? 0 : v; persist(); });
+  $("money").addEventListener("blur", renderToday);
+  function addIdea(){
+    const i = $("ideaIn"), v = i.value.trim(); if (!v) return;
+    state.ideas.unshift({t:v, d:todayKey()}); i.value = ""; persist(); renderToday(); toast("Anotada. Agora volta pro foco!");
+  }
+  $("ideaAdd").addEventListener("click", addIdea);
+  $("ideaIn").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); addIdea(); } });
+  $("ideas").addEventListener("click", e => { const b = e.target.closest("button[data-i]"); if (!b) return; state.ideas.splice(+b.dataset.i,1); persist(); renderToday(); });
+
+  // ---------- METAS ----------
+  function renderGoals(){
+    $("goals").innerHTML = GOALS.map(g => {
+      const n = g.items.filter(([id]) => state.goals[id]).length;
+      return `<div class="card"><h2>${g.title} <small>${n}/${g.items.length}</small></h2>` +
+        g.items.map(([id,t]) => `<div class="task ${state.goals[id]?"done":""}" data-g="${id}"><div class="box">${CHECK}</div><div class="t"><b>${esc(t)}</b></div></div>`).join("") + `</div>`;
+    }).join("");
+  }
+  $("goals").addEventListener("click", e => {
+    const el = e.target.closest(".task"); if (!el) return;
+    const id = el.dataset.g; state.goals[id] = !state.goals[id]; if (!state.goals[id]) delete state.goals[id];
+    persist(); renderGoals(); if (state.goals[id]) toast("Meta concluída! 🎯");
+  });
+
+  // ---------- DOMINGO ----------
+  let wkOffset = 0;
+  function weekData(mon){
+    let pros = 0, money = 0, days = 0;
+    for (let i = 0; i < 7; i++) { const d = state.days[keyOf(addDays(mon,i))]; if (!d) continue; pros += d.p||0; money += d.m||0; if (dayPct(d) >= 70) days++; }
+    return {pros, money, days};
+  }
+  function renderReview(){
+    const mon = addDays(monday(new Date()), wkOffset*7), sun = addDays(mon,6), wk = keyOf(mon);
+    const f = d => d.toLocaleDateString("pt-BR",{day:"numeric", month:"short"});
+    $("wkLabel").innerHTML = (wkOffset===0 ? "Esta semana" : wkOffset===-1 ? "Semana passada" : "Semana") + "<br><span style='color:var(--muted);font-weight:500'>" + f(mon) + " – " + f(sun) + "</span>";
+    $("wkNext").disabled = wkOffset >= 0; $("wkNext").style.opacity = wkOffset >= 0 ? .35 : 1;
+    const r = state.reviews[wk] || {}, a = weekData(mon);
+    const autoTxt = {pros:"No app: " + a.pros + " abordagens", money:"No app: " + fmtMoney(a.money), days:"No app: " + a.days + " dias com 70% ou mais da rotina"};
+    $("review").innerHTML = QUESTIONS.map(([id,q,auto]) =>
+      `<div class="q"><label for="${id}">${esc(q)}</label>${auto?`<div class="auto">${autoTxt[auto]}</div>`:""}<textarea id="${id}" data-q="${id}" data-wk="${wk}" placeholder="Escreva aqui…">${esc(r[id]||"")}</textarea></div>`
+    ).join("");
+  }
+  $("review").addEventListener("input", e => {
+    const t = e.target; if (!t.dataset.q) return;
+    const wk = t.dataset.wk; state.reviews[wk] = state.reviews[wk] || {};
+    state.reviews[wk][t.dataset.q] = t.value; persist();
+  });
+  $("wkPrev").addEventListener("click", () => { wkOffset--; renderReview(); });
+  $("wkNext").addEventListener("click", () => { if (wkOffset < 0) { wkOffset++; renderReview(); } });
+
+  // ---------- PROGRESSO ----------
+  function renderProg(){
+    let pros = 0, money = 0, full = 0;
+    Object.values(state.days).forEach(d => { pros += d.p||0; money += d.m||0; if (dayPct(d) === 100) full++; });
+    const streak = getStreak(); renderRank(streak);
+    $("sStreak").textContent = streak; $("sPros").textContent = pros; $("sMoney").textContent = fmtMoney(money); $("sDays").textContent = full;
+    const cols = [], now = new Date(); let max = G(); $("cgoal").textContent = "meta " + G() + "/dia";
+    for (let i = 6; i >= 0; i--) { const dt = addDays(now,-i), d = state.days[keyOf(dt)]; const v = d ? d.p||0 : 0; max = Math.max(max,v); cols.push({v, l: i===0 ? "hoje" : dt.toLocaleDateString("pt-BR",{weekday:"short"}).replace(".","")}); }
+    $("chart").innerHTML = cols.map(c => `<div class="col"><span class="v">${c.v||""}</span><div class="b ${c.v<G()?"low":""}" style="height:${Math.round(c.v/max*85)}%"></div><small>${c.l}</small></div>`).join("");
+    let m30 = 0; for (let i = 0; i < 30; i++) { const d = state.days[keyOf(addDays(now,-i))]; if (d) m30 += d.p||0; }
+    $("m30").innerHTML = m30 + "<span> / 200</span>"; $("m30bar").style.width = Math.min(100, m30/2) + "%";
+  }
+
+  // ---------- lema, frases e patentes ----------
+  const QUOTES = [
+    "Motivação acaba. Rotina fica.",
+    "Missão dada é missão cumprida.",
+    "Ninguém vem te salvar. Levanta e vai.",
+    "Dia ruim também conta, desde que você cumpra.",
+    "Você não precisa de mais ideias. Precisa de mais execução.",
+    "Disciplina hoje, liberdade amanhã.",
+    "Não negocie com a preguiça.",
+    "Pequeno todo dia vence grande de vez em quando.",
+    "Cada não te deixa mais perto do sim.",
+    "Quem bate na porta todo dia não fica sem cliente.",
+    "Sem desculpas. Só relatório.",
+    "O cansaço passa. O arrependimento de não ter feito, não.",
+    "Um alvo. Um passo de cada vez.",
+    "Você não está atrasado. Está começando.",
+    "Execução derrota ansiedade.",
+    "Seu futuro está sendo decidido às 8h da manhã.",
+    "Constância vence talento que não aparece.",
+    "Faça hoje o que o Paulo de daqui a 6 meses vai agradecer.",
+    "Quem tem foco não tem tempo para distração.",
+    "O placar de hoje é o número de portas que você bateu.",
+    "Vontade é opcional. Cumprir não é.",
+    "Primeiro o dever, depois o descanso."
+  ];
+  const RANKS = [
+    [0,"Recruta","🪖"],[3,"Soldado","🎗️"],[7,"Cabo","🔰"],[14,"Sargento","🎖️"],
+    [30,"Tenente","⭐"],[60,"Capitão","🌟"],[90,"Major","🏅"],[180,"Coronel","🏆"]
+  ];
+  let quoteShift = 0;
+  function getStreak(){
+    let streak = 0, cur = new Date();
+    if (dayPct(state.days[keyOf(cur)]) < 70) cur = addDays(cur,-1);
+    while (dayPct(state.days[keyOf(cur)]) >= 70) { streak++; cur = addDays(cur,-1); }
+    return streak;
+  }
+  function rankOf(s){ let i = 0; RANKS.forEach((r,j) => { if (s >= r[0]) i = j; }); return i; }
+  function renderHero(){
+    const motto = (state.settings && state.settings.motto) || "No longo prazo eu não perco.";
+    $("motto").textContent = motto;
+    const dayIdx = Math.floor((Date.now() - new Date().getTimezoneOffset()*60000)/86400000);
+    $("quote").textContent = QUOTES[(dayIdx + quoteShift) % QUOTES.length];
+    const s = getStreak(), i = rankOf(s);
+    $("rankchip").innerHTML = "<i>" + RANKS[i][2] + "</i> " + RANKS[i][1] + " · " + s + (s===1?" dia":" dias") + " em sequência";
+  }
+  function renderRank(s){
+    const i = rankOf(s), nx = RANKS[i+1];
+    $("rbadge").textContent = RANKS[i][2]; $("rname").textContent = RANKS[i][1];
+    $("rnext").textContent = nx ? "Faltam " + (nx[0]-s) + " dias seguidos para " + nx[1] + ". Dia conta com 70% da rotina." : "Patente máxima. Respeito.";
+    $("rlist").innerHTML = RANKS.map(r => `<em class="${s>=r[0]?"got":""}">${r[2]} ${r[1]} · ${r[0]}d</em>`).join("");
+  }
+
+  // ---------- ajustes ----------
+  function S(){ if (!state.settings) state.settings = {}; return state.settings; }
+  function ensureRoutineCopy(){ const st = S(); if (!Array.isArray(st.routine) || !st.routine.length) st.routine = JSON.parse(JSON.stringify(DEFAULT_ROUTINE)); return st.routine; }
+  function renderSettings(){
+    const st = state.settings || {};
+    const mi = $("sMotto"), gi = $("sGoal");
+    if (document.activeElement !== mi) mi.value = st.motto || "No longo prazo eu não perco.";
+    if (document.activeElement !== gi) gi.value = G();
+    $("sRoutine").innerHTML = R().map((x,i) =>
+      `<div class="edit"><input class="h" type="text" data-i="${i}" data-f="h" value="${esc(x.h)}" placeholder="Hora"><input type="text" data-i="${i}" data-f="t" value="${esc(x.t)}" placeholder="Tarefa"><button data-del="${i}" aria-label="Remover">×</button></div>`).join("");
+  }
+  $("sMotto").addEventListener("input", e => { S().motto = e.target.value.trim(); persist(); renderHero(); });
+  $("sGoal").addEventListener("input", e => { const v = parseInt(e.target.value,10); if (v > 0) { S().goal = Math.min(100,v); persist(); renderToday(); } });
+  $("sRoutine").addEventListener("input", e => {
+    const t = e.target; if (t.dataset.i === undefined) return;
+    const rt = ensureRoutineCopy(), it = rt[+t.dataset.i]; if (!it) return;
+    it[t.dataset.f] = t.value; if (t.dataset.f === "t") it.s = it.s || ""; persist(); renderToday();
+  });
+  $("sRoutine").addEventListener("click", e => {
+    const b = e.target.closest("button[data-del]"); if (!b) return;
+    const rt = ensureRoutineCopy(); if (rt.length <= 1) { toast("A rotina precisa de pelo menos 1 tarefa"); return; }
+    rt.splice(+b.dataset.del,1); persist(); renderSettings(); renderToday();
+  });
+  $("sAdd").addEventListener("click", () => { ensureRoutineCopy().push({id:"c"+Date.now(), h:"", t:"Nova tarefa", s:""}); persist(); renderSettings(); renderToday(); });
+  $("sReset").addEventListener("click", () => { S().routine = null; persist(); renderSettings(); renderToday(); toast("Rotina padrão restaurada"); });
+  $("sQuote").addEventListener("click", () => { quoteShift++; renderHero(); toast("Frase trocada"); });
+
+  // ---------- alerta da semana ----------
+  function renderWeekAlert(){
+    const now = new Date(), dow = now.getDay(); // 0 dom, 5 sex, 6 sab
+    const goal = G()*6, w = weekData(monday(now));
+    let html = "";
+    if ((dow === 5 || dow === 6 || dow === 0) && w.pros < goal) {
+      const left = goal - w.pros;
+      const daysLeft = dow === 5 ? 2 : dow === 6 ? 1 : 0;
+      const tip = daysLeft ? "Faltam " + left + " abordagens. Dá " + Math.ceil(left/daysLeft) + " por dia até sábado. Bora recuperar." : "A semana fechou com " + left + " abordagens a menos. Na revisão, anote o que te travou e ajuste para segunda.";
+      html = '<div class="alert"><b>⚠ Semana abaixo da meta: ' + w.pros + ' de ' + goal + '</b><p>' + tip + '</p></div>';
+    }
+    $("weekAlert").innerHTML = html; $("weekAlert2").innerHTML = html;
+  }
+
+  // ---------- clientes ----------
+  const STAGES = ["Abordado","Conversando","Orçamento enviado","Fechado","Perdido"];
+  let cFilter = "ativos";
+  function renderClients(){
+    const cs = state.clients || [];
+    const cnt = STAGES.map((_,i) => cs.filter(c => c.st === i).length);
+    $("funnel").innerHTML = [0,1,2,3].map(i => `<div><b>${cnt[i]}</b><span>${STAGES[i]}</span></div>`).join("");
+    const mrr = cs.filter(c => c.st === 3).reduce((a,c) => a + (Number(c.v)||0), 0);
+    $("mrr").textContent = mrr ? "fechado: " + fmtMoney(mrr) + "/mês" : "";
+    const fs = [["ativos","Em andamento", cs.filter(c=>c.st<3).length]].concat(STAGES.map((n,i)=>[String(i),n,cnt[i]]));
+    $("cFilters").innerHTML = fs.map(([k,n,c]) => `<button data-f="${k}" class="${cFilter===k?"on":""}">${n} (${c})</button>`).join("");
+    const list = cs.filter(c => cFilter === "ativos" ? c.st < 3 : c.st === +cFilter).slice().sort((a,b) => (b.u||0)-(a.u||0));
+    $("clients").innerHTML = list.length ? list.map(c => {
+      const next = c.st < 3 ? `<button class="go" data-a="next" data-id="${c.id}">→ ${STAGES[c.st+1]}</button>` : `<button data-a="reopen" data-id="${c.id}">Reabrir</button>`;
+      const lost = c.st < 3 ? `<button data-a="lost" data-id="${c.id}">Perdido</button>` : "";
+      return `<div class="client"><div class="top"><div><div class="nm">${esc(c.n)}</div>${c.note?`<div class="nt">${esc(c.note)}</div>`:""}${c.v?`<div class="val">${fmtMoney(c.v)}/mês</div>`:""}</div><span class="stg stg-${c.st}">${STAGES[c.st]}</span></div><div class="acts">${next}${lost}<button data-a="val" data-id="${c.id}">R$</button><button class="x" data-a="del" data-id="${c.id}" aria-label="Apagar">×</button></div></div>`;
+    }).join("") : '<p class="hint" style="text-align:center;padding:14px 0">Nenhum contato aqui ainda.</p>';
+  }
+  $("cAdd").addEventListener("click", () => {
+    const n = $("cName").value.trim(); if (!n) { toast("Escreva o nome do negócio"); return; }
+    state.clients = state.clients || [];
+    state.clients.push({id:"k"+Date.now(), n, note:$("cNote").value.trim(), st:0, v:0, u:Date.now(), d:todayKey()});
+    if ($("cCount").checked) day().p++;
+    $("cName").value = ""; $("cNote").value = "";
+    persist(); renderClients(); renderToday(); toast("Contato adicionado");
+  });
+  $("cFilters").addEventListener("click", e => { const b = e.target.closest("button[data-f]"); if (!b) return; cFilter = b.dataset.f; renderClients(); });
+  let pendingDel = null, pendingVal = null;
+  $("clients").addEventListener("click", e => {
+    const b = e.target.closest("button[data-a]"); if (!b) return;
+    const c = (state.clients||[]).find(x => x.id === b.dataset.id); if (!c) return;
+    const a = b.dataset.a;
+    if (a === "next") { c.st++; c.u = Date.now(); if (c.st === 3) toast("Cliente fechado! 🏆"); }
+    else if (a === "lost") { c.st = 4; c.u = Date.now(); toast("Faz parte. Próximo!"); }
+    else if (a === "reopen") { c.st = 1; c.u = Date.now(); }
+    else if (a === "del") {
+      if (pendingDel !== c.id) { pendingDel = c.id; b.textContent = "?"; b.style.color = "#fca5a5"; toast("Toque de novo para apagar"); setTimeout(() => { if (pendingDel === c.id) { pendingDel = null; renderClients(); } }, 2500); return; }
+      state.clients = state.clients.filter(x => x.id !== c.id); pendingDel = null;
+    }
+    else if (a === "val") {
+      const card = b.closest(".client"); if (card.querySelector(".valin")) return;
+      const w = document.createElement("div"); w.className = "row valin"; w.style.marginTop = "10px";
+      w.innerHTML = `<div class="money" style="flex:1"><input type="number" inputmode="decimal" min="0" step="0.01" placeholder="Valor mensal" value="${c.v||""}"></div><button class="btn">OK</button>`;
+      card.appendChild(w); const inp = w.querySelector("input"); inp.focus();
+      const ok = () => { const v = parseFloat(String(inp.value).replace(",", ".")); c.v = isNaN(v) ? 0 : v; c.u = Date.now(); persist(); renderClients(); };
+      w.querySelector("button").addEventListener("click", ok);
+      inp.addEventListener("keydown", ev => { if (ev.key === "Enter") ok(); });
+      return;
+    }
+    persist(); renderClients();
+  });
+
+  // ---------- backup ----------
+  function renderBackupInfo(){ const t = state.lastBackup; $("bkInfo").textContent = t ? "Último backup: " + new Date(t).toLocaleDateString("pt-BR",{day:"numeric",month:"long"}) : "Nenhum backup feito ainda."; }
+  $("bkDown").addEventListener("click", () => {
+    state.lastBackup = Date.now(); persist();
+    const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+    a.download = "meu-plano-backup-" + todayKey() + ".json"; document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    renderBackupInfo(); toast("Backup baixado");
+  });
+  $("bkUp").addEventListener("click", () => $("bkFile").click());
+  $("bkFile").addEventListener("change", e => {
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      try {
+        const d = JSON.parse(rd.result);
+        if (!d || typeof d !== "object" || !d.days) throw new Error("x");
+        state = Object.assign({days:{}, goals:{}, ideas:[], reviews:{}, clients:[], updated:0}, d);
+        persist(); renderAll(); toast("Dados restaurados");
+      } catch(err) { toast("Arquivo de backup inválido"); }
+      e.target.value = "";
+    };
+    rd.readAsText(f);
+  });
+
+  // ---------- navegação ----------
+  function show(v){
+    document.querySelectorAll(".view").forEach(s => s.classList.toggle("on", s.id === "v-"+v));
+    document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.v === v));
+    if (v === "hoje") renderToday(); if (v === "metas") renderGoals(); if (v === "domingo") renderReview(); if (v === "prog") renderProg(); if (v === "clientes") renderClients(); if (v === "ajustes") renderSettings();
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll("nav button").forEach(b => b.addEventListener("click", () => show(b.dataset.v)));
+  $("gear").addEventListener("click", () => show("ajustes"));
+
+  function renderAll(){ renderBackupInfo(); renderHeader(); renderClients(); renderToday(); renderGoals(); renderReview(); renderProg(); renderSettings(); }
+  renderAll();
+  if (new Date().getDay() === 0) setTimeout(() => toast("Hoje é domingo: faça sua revisão"), 800);
+  setInterval(renderHeader, 60000);
+
+  // ---------- salvamento local ----------
+  setSync("Salvo no aparelho", true);
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e) {}
+})();
+</script>
+</body>
+</html>
