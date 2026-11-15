@@ -140,6 +140,19 @@
   .wk{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
   .wk button{background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:10px;width:40px;height:36px;font-size:18px;cursor:pointer}
   .wk div{font-size:13.5px;font-weight:600;text-align:center}
+  .tp{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:6px;background:#1e2a3d;color:#93c5fd;margin-left:6px;vertical-align:2px}
+  .tp.tst{background:#2d2340;color:#c4b5fd}.tp.emp{background:#3a2f12;color:#fcd34d}
+  .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .seg button{background:var(--card2);border:1px solid var(--line);color:var(--muted);border-radius:10px;padding:10px 4px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+  .seg button.on{background:var(--accent);border-color:var(--accent);color:#06210f}
+  .plans{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+  .plans button{flex:1;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:8px 4px;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
+  .kit{display:grid;gap:8px}
+  .kit a,.kit button{display:block;text-align:center;text-decoration:none;background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+  .kit a.main{background:var(--accent);border-color:var(--accent);color:#06210f}
+  .trial{background:#1e2a3d;border:1px solid #2f4a75;border-radius:var(--radius);padding:14px 16px;margin-bottom:14px}
+  .trial b{display:block;color:#93c5fd;font-size:14.5px;margin-bottom:4px}
+  .trial p{margin:0;font-size:13.5px;color:#d6e2f5;line-height:1.5}
 </style>
 </head>
 <body>
@@ -161,6 +174,7 @@
       <div class="rankchip" id="rankchip"></div>
     </div>
     <div id="weekAlert"></div>
+    <div id="trialAlert"></div>
     <div class="card">
       <div class="ring">
         <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" fill="none" stroke="#2a2f3a" stroke-width="3.5"/><circle id="ringc" cx="18" cy="18" r="15.5" fill="none" stroke="#22c55e" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0 100" transform="rotate(-90 18 18)" pathLength="100"/><text id="ringt" x="18" y="21" text-anchor="middle" font-size="9" font-weight="800" fill="#eef0f4">0%</text></svg>
@@ -169,7 +183,7 @@
     </div>
 
     <div class="card">
-      <h2>Negócios abordados hoje <small id="pgoal">meta: 10</small></h2>
+      <h2>TSTs e consultorias abordados hoje <small id="pgoal">meta: 10</small></h2>
       <div class="counter">
         <button class="cbtn" id="minus" aria-label="Diminuir">−</button>
         <div class="num" id="pnum">0</div>
@@ -181,6 +195,17 @@
     <div class="card">
       <h2>Rotina de hoje <small id="rcount">0/9</small></h2>
       <div id="routine"></div>
+    </div>
+
+    <div class="card">
+      <h2>Kit de abordagem</h2>
+      <p class="hint">Copie a mensagem, cole no WhatsApp ou Instagram e personalize o nome.</p>
+      <div class="kit">
+        <button id="kitTst">Copiar mensagem para TST</button>
+        <button id="kitCons">Copiar mensagem para consultoria</button>
+        <button id="kitParc">Copiar convite de parceria (comissão)</button>
+        <a class="main" href="https://treinamentosemdia.com.br" target="_blank" rel="noopener">Abrir treinamentosemdia.com.br</a>
+      </div>
     </div>
 
     <div class="card">
@@ -205,8 +230,9 @@
     <div class="card">
       <h2>Novo contato</h2>
       <div class="form">
-        <input type="text" id="cName" placeholder="Nome do negócio (ex.: Clínica Sorriso)">
-        <input type="text" id="cNote" placeholder="Telefone, ramo ou observação">
+        <div class="seg" id="cType"><button data-t="cons" class="on">Consultoria</button><button data-t="tst">TST</button><button data-t="emp">Empresa</button></div>
+        <input type="text" id="cName" placeholder="Nome (ex.: PVH Consultoria SST)">
+        <input type="text" id="cNote" placeholder="WhatsApp, Instagram, cidade ou observação">
       </div>
       <label class="chk"><input type="checkbox" id="cCount" checked> Contar como abordagem de hoje</label>
       <button class="btn" id="cAdd" style="width:100%;margin-top:10px">Adicionar</button>
@@ -217,16 +243,17 @@
 
   <!-- METAS -->
   <section class="view" id="v-metas">
-    <div class="card rule"><p><b>Regra principal:</b> nenhum projeto novo antes do primeiro faturamento recorrente. Foco em sites e automação para negócios locais de Porto Velho.</p></div>
+    <div class="card rule"><p><b>Regra principal:</b> nenhum projeto novo antes do primeiro faturamento recorrente. Foco total no <b>Treinamentos em Dia</b>: TSTs e consultorias de SST, de Porto Velho e do Brasil todo.</p></div>
     <div id="goals"></div>
     <div class="card">
       <h2>Pausados até ter caixa</h2>
       <ul class="paused">
+        <li>ASO em Dia (volta depois)</li>
+        <li>Sites e landing pages</li>
         <li>Canal dark, e-book, canal infantil, bot de live</li>
         <li>Dropshipping, confinamento de bois, Paraguai</li>
         <li>Hacker ético (estudar depois do mês 6)</li>
       </ul>
-      <p class="hint" style="margin-top:10px">Apps de ASO seguem como projeto secundário (20% do tempo).</p>
     </div>
   </section>
 
@@ -251,7 +278,7 @@
       <h2>Seus números</h2>
       <div class="stats">
         <div class="stat"><b id="sStreak">0</b><span>dias seguidos com a rotina em dia</span></div>
-        <div class="stat"><b id="sPros">0</b><span>negócios abordados (total)</span></div>
+        <div class="stat"><b id="sPros">0</b><span>TSTs e consultorias abordados (total)</span></div>
         <div class="stat"><b id="sMoney">R$ 0</b><span>dinheiro que entrou (total)</span></div>
         <div class="stat"><b id="sDays">0</b><span>dias com rotina completa</span></div>
       </div>
@@ -315,33 +342,41 @@
   const DEFAULT_ROUTINE = [
     {id:"acordar", h:"6h30", t:"Acordar, água, banho e caminhada", s:"Celular só depois disso"},
     {id:"planejar", h:"7h30", t:"Planejar o dia", s:"Escrever as 3 tarefas mais importantes"},
-    {id:"prospectar", h:"8h", t:"Prospecção (8h–11h)", s:"Abordar 10 negócios com demonstração pronta"},
-    {id:"responder", h:"11h", t:"Responder contatos", s:"WhatsApp, Workana, 99Freelas"},
-    {id:"entregar", h:"14h", t:"Entregar e produzir (14h–17h)", s:"Sites de clientes, portfólio, apps de ASO"},
+    {id:"prospectar", h:"8h", t:"Prospecção (8h–11h)", s:"Abordar 10 TSTs e consultorias de SST"},
+    {id:"responder", h:"11h", t:"Responder contatos", s:"WhatsApp, Instagram e e-mail"},
+    {id:"entregar", h:"14h", t:"Testes grátis e conteúdo (14h–17h)", s:"Acompanhar quem está testando e postar no @treinamentosemdia.oficial"},
     {id:"exercicio", h:"17h", t:"Exercício ou descanso", s:"Longe da tela"},
-    {id:"estudo", h:"20h", t:"1 hora de estudo", s:"Automação, WhatsApp, IA, vendas"},
+    {id:"estudo", h:"20h", t:"1 hora de estudo", s:"NRs, SST e vendas"},
     {id:"fechar", h:"21h", t:"Fechar o dia", s:"Conferir abordagens e dinheiro aqui no app"},
     {id:"dormir", h:"22h30", t:"Dormir", s:"Sem rolar feed na cama"}
   ];
+  const OLD_ROUTINE_TXT = {
+    prospectar:["Abordar 10 negócios com demonstração pronta"],
+    responder:["WhatsApp, Workana, 99Freelas"],
+    entregar:["Sites de clientes, portfólio, apps de ASO"],
+    estudo:["Automação, WhatsApp, IA, vendas"]
+  };
   const GOALS = [
     {title:"Até 30 dias", items:[
-      ["g1","Escolher um nicho local (clínicas, oficinas, salões…)"],
-      ["g2","Portfólio no ar com 3 exemplos"],
-      ["g3","200 negócios abordados"],
-      ["g4","Primeiro cliente fechado, mesmo barato"]]},
+      ["t1","Mensagens de abordagem para TST e consultoria testadas"],
+      ["t2","Vídeo de 1 minuto mostrando o sistema"],
+      ["t3","200 TSTs e consultorias abordados"],
+      ["t4","10 contatos colocados no teste grátis de 7 dias"],
+      ["t5","Primeiro cliente pagante no plano Fundador"]]},
     {title:"Até 90 dias", items:[
-      ["g5","3 a 5 clientes pagando mensalidade"],
-      ["g6","3 depoimentos com resultado em números"],
-      ["g7","Primeiro cliente pagante nos apps de ASO"]]},
+      ["t6","Os 10 clientes do plano Fundador fechados"],
+      ["t7","Primeira consultoria no plano Consultoria"],
+      ["t8","3 depoimentos de clientes"],
+      ["t9","2 parceiros (TST ou consultor) vendendo com comissão"]]},
     {title:"Até 180 dias", items:[
-      ["g8","Renda mensal estável que cubra as contas"],
-      ["g9","Reserva de pelo menos 3 meses de gastos"],
-      ["g10","Comprar um computador com dinheiro do trabalho"],
-      ["g11","Só então decidir qual projeto pausado retomar"]]}
+      ["t10","Renda mensal estável que cubra as contas"],
+      ["t11","Reserva de pelo menos 3 meses de gastos"],
+      ["t12","Comprar um computador com dinheiro do trabalho"],
+      ["t13","Só então decidir qual projeto pausado retomar"]]}
   ];
   const QUESTIONS = [
-    ["q1","Quantos negócios abordei? (meta: 60)","pros"],
-    ["q2","Quantas conversas e orçamentos saíram disso?"],
+    ["q1","Quantos TSTs e consultorias abordei? (meta: 60)","pros"],
+    ["q2","Quantas conversas e testes grátis saíram disso?"],
     ["q3","Quanto dinheiro entrou?","money"],
     ["q4","Segui a rotina em quantos dias de 6?","days"],
     ["q5","Comecei algum projeto novo? Se sim, por quê?"],
@@ -399,7 +434,7 @@
     $("pnum").innerHTML = d.p + "<span> / " + G() + "</span>";
     $("pgoal").textContent = "meta: " + G();
     $("pbar").style.width = Math.min(100, d.p/G()*100) + "%";
-    renderHero(); renderWeekAlert();
+    renderHero(); renderWeekAlert(); renderTrialAlert();
     // dinheiro
     const mi = $("money"); if (document.activeElement !== mi) mi.value = d.m ? d.m : "";
     // anel
@@ -504,6 +539,8 @@
     "Pequeno todo dia vence grande de vez em quando.",
     "Cada não te deixa mais perto do sim.",
     "Quem bate na porta todo dia não fica sem cliente.",
+    "Dez mensagens por dia. Dez clientes Fundador. Uma vida diferente.",
+    "Teste grátis sem acompanhamento é cliente perdido.",
     "Sem desculpas. Só relatório.",
     "O cansaço passa. O arrependimento de não ter feito, não.",
     "Um alvo. Um passo de cada vez.",
@@ -586,8 +623,15 @@
   }
 
   // ---------- clientes ----------
-  const STAGES = ["Abordado","Conversando","Orçamento enviado","Fechado","Perdido"];
-  let cFilter = "ativos";
+  const STAGES = ["Abordado","Conversando","Teste grátis","Cliente","Perdido"];
+  const TYPES = {cons:"Consultoria", tst:"TST", emp:"Empresa"};
+  const PLANS = [["Fundador",47],["Empresa",97],["Consultoria",197]];
+  let cFilter = "ativos", cType = "cons";
+  $("cType").addEventListener("click", e => {
+    const b = e.target.closest("button[data-t]"); if (!b) return;
+    cType = b.dataset.t;
+    $("cType").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+  });
   function renderClients(){
     const cs = state.clients || [];
     const cnt = STAGES.map((_,i) => cs.filter(c => c.st === i).length);
@@ -600,13 +644,14 @@
     $("clients").innerHTML = list.length ? list.map(c => {
       const next = c.st < 3 ? `<button class="go" data-a="next" data-id="${c.id}">→ ${STAGES[c.st+1]}</button>` : `<button data-a="reopen" data-id="${c.id}">Reabrir</button>`;
       const lost = c.st < 3 ? `<button data-a="lost" data-id="${c.id}">Perdido</button>` : "";
-      return `<div class="client"><div class="top"><div><div class="nm">${esc(c.n)}</div>${c.note?`<div class="nt">${esc(c.note)}</div>`:""}${c.v?`<div class="val">${fmtMoney(c.v)}/mês</div>`:""}</div><span class="stg stg-${c.st}">${STAGES[c.st]}</span></div><div class="acts">${next}${lost}<button data-a="val" data-id="${c.id}">R$</button><button class="x" data-a="del" data-id="${c.id}" aria-label="Apagar">×</button></div></div>`;
+      const tp = c.tp && TYPES[c.tp] ? `<span class="tp ${c.tp}">${TYPES[c.tp]}</span>` : "";
+      return `<div class="client"><div class="top"><div><div class="nm">${esc(c.n)}${tp}</div>${c.note?`<div class="nt">${esc(c.note)}</div>`:""}${c.v?`<div class="val">${fmtMoney(c.v)}/mês</div>`:""}</div><span class="stg stg-${c.st}">${STAGES[c.st]}</span></div><div class="acts">${next}${lost}<button data-a="val" data-id="${c.id}">R$</button><button class="x" data-a="del" data-id="${c.id}" aria-label="Apagar">×</button></div></div>`;
     }).join("") : '<p class="hint" style="text-align:center;padding:14px 0">Nenhum contato aqui ainda.</p>';
   }
   $("cAdd").addEventListener("click", () => {
     const n = $("cName").value.trim(); if (!n) { toast("Escreva o nome do negócio"); return; }
     state.clients = state.clients || [];
-    state.clients.push({id:"k"+Date.now(), n, note:$("cNote").value.trim(), st:0, v:0, u:Date.now(), d:todayKey()});
+    state.clients.push({id:"k"+Date.now(), n, tp:cType, note:$("cNote").value.trim(), st:0, v:0, u:Date.now(), d:todayKey()});
     if ($("cCount").checked) day().p++;
     $("cName").value = ""; $("cNote").value = "";
     persist(); renderClients(); renderToday(); toast("Contato adicionado");
@@ -617,7 +662,7 @@
     const b = e.target.closest("button[data-a]"); if (!b) return;
     const c = (state.clients||[]).find(x => x.id === b.dataset.id); if (!c) return;
     const a = b.dataset.a;
-    if (a === "next") { c.st++; c.u = Date.now(); if (c.st === 3) toast("Cliente fechado! 🏆"); }
+    if (a === "next") { c.st++; c.u = Date.now(); if (c.st === 2) c.trial = Date.now(); if (c.st === 3) toast("Cliente fechado! Toque em R$ para marcar o plano 🏆"); }
     else if (a === "lost") { c.st = 4; c.u = Date.now(); toast("Faz parte. Próximo!"); }
     else if (a === "reopen") { c.st = 1; c.u = Date.now(); }
     else if (a === "del") {
@@ -627,10 +672,13 @@
     else if (a === "val") {
       const card = b.closest(".client"); if (card.querySelector(".valin")) return;
       const w = document.createElement("div"); w.className = "row valin"; w.style.marginTop = "10px";
-      w.innerHTML = `<div class="money" style="flex:1"><input type="number" inputmode="decimal" min="0" step="0.01" placeholder="Valor mensal" value="${c.v||""}"></div><button class="btn">OK</button>`;
-      card.appendChild(w); const inp = w.querySelector("input"); inp.focus();
+      w.innerHTML = `<div class="money" style="flex:1"><input type="number" inputmode="decimal" min="0" step="0.01" placeholder="Mensalidade" value="${c.v||""}"></div><button class="btn">OK</button>`;
+      const pl = document.createElement("div"); pl.className = "plans valin";
+      pl.innerHTML = PLANS.map(([n,v]) => `<button data-v="${v}">${n} ${v}</button>`).join("");
+      card.appendChild(w); card.appendChild(pl); const inp = w.querySelector("input"); inp.focus();
       const ok = () => { const v = parseFloat(String(inp.value).replace(",", ".")); c.v = isNaN(v) ? 0 : v; c.u = Date.now(); persist(); renderClients(); };
       w.querySelector("button").addEventListener("click", ok);
+      pl.addEventListener("click", ev => { const pb = ev.target.closest("button[data-v]"); if (!pb) return; inp.value = pb.dataset.v; ok(); });
       inp.addEventListener("keydown", ev => { if (ev.key === "Enter") ok(); });
       return;
     }
@@ -662,6 +710,43 @@
     };
     rd.readAsText(f);
   });
+
+  // ---------- testes grátis em andamento ----------
+  function renderTrialAlert(){
+    const now = Date.now(), DAY = 86400000;
+    const tr = (state.clients||[]).filter(c => c.st === 2).map(c => ({c, d: Math.floor((now - (c.trial||c.u||now))/DAY) + 1}));
+    if (!tr.length) { $("trialAlert").innerHTML = ""; return; }
+    const lines = tr.sort((a,b) => b.d - a.d).slice(0,5).map(({c,d}) => {
+      const tip = d >= 7 ? "teste acabou: pergunte se vai assinar" : d >= 6 ? "último dia: ofereça o plano Fundador" : d >= 3 ? "pergunte se conseguiu cadastrar os cursos" : "deixe usar, fale no 3º dia";
+      return "• <b style='display:inline;color:#eef0f4;font-size:13.5px'>" + esc(c.n) + "</b> — dia " + Math.min(d,7) + " de 7: " + tip;
+    }).join("<br>");
+    $("trialAlert").innerHTML = '<div class="trial"><b>Testes grátis em andamento: ' + tr.length + '</b><p>' + lines + '</p></div>';
+  }
+
+  // ---------- kit de abordagem ----------
+  const KIT = {
+    kitTst: "Olá, tudo bem? Sou o Paulo, de Porto Velho. Criei o Treinamentos em Dia, um sistema que controla as NRs dos funcionários das empresas que você atende: validades, turmas, lista de presença e certificados num lugar só, com aviso antes de vencer. Dá pra testar 7 dias grátis, sem cartão: treinamentosemdia.com.br. Para os 10 primeiros clientes o plano Fundador sai R$ 47/mês. Posso te mostrar em 5 minutos?",
+    kitCons: "Olá, tudo bem? Sou o Paulo, fundador do Treinamentos em Dia. É um sistema para consultorias de SST controlarem os treinamentos e NRs de todas as empresas clientes num só painel: vencimentos, turmas, lista de presença, certificados e relatórios. Vocês podem testar 7 dias grátis, sem cartão: treinamentosemdia.com.br. Posso mostrar como funciona numa chamada rápida?",
+    kitParc: "Olá, tudo bem? Sou o Paulo, fundador do Treinamentos em Dia (treinamentosemdia.com.br), sistema de controle de treinamentos e NRs. Estou montando um time de parceiros entre TSTs e consultores de SST: você indica o sistema para as empresas que atende e ganha comissão por cada cliente que assinar. Topa conversar 5 minutos?"
+  };
+  function copyText(txt){
+    const done = () => toast("Mensagem copiada");
+    try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(txt).then(done, () => fallback()); return; } } catch(e) {}
+    fallback();
+    function fallback(){ const ta = document.createElement("textarea"); ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); done(); } catch(e) { toast("Não deu para copiar"); } ta.remove(); }
+  }
+  Object.keys(KIT).forEach(id => $(id).addEventListener("click", () => copyText(KIT[id])));
+
+  // ---------- atualiza textos antigos da rotina (mantém o que você personalizou) ----------
+  (function migrateRoutine(){
+    const rt = state.settings && Array.isArray(state.settings.routine) ? state.settings.routine : null;
+    if (!rt) return; let changed = false;
+    rt.forEach(it => {
+      const def = DEFAULT_ROUTINE.find(d => d.id === it.id), old = OLD_ROUTINE_TXT[it.id];
+      if (def && old && old.indexOf(it.s) !== -1) { it.s = def.s; if (it.id === "entregar" && it.t === "Entregar e produzir (14h–17h)") it.t = def.t; changed = true; }
+    });
+    if (changed) persist();
+  })();
 
   // ---------- navegação ----------
   function show(v){
