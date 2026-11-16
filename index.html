@@ -214,6 +214,12 @@
     </div>
 
     <div class="card">
+      <h2>Depois da abordagem</h2>
+      <p class="hint">Mensagens prontas para cada situação. Toque para copiar e troque o que está entre colchetes. Termine sempre com uma pergunta e ofereça dois horários.</p>
+      <div class="kit" id="kitConv"></div>
+    </div>
+
+    <div class="card">
       <h2>Quanto entrou hoje</h2>
       <div class="money"><input type="number" inputmode="decimal" min="0" step="0.01" id="money" placeholder="0,00"></div>
     </div>
@@ -813,6 +819,9 @@
     function fallback(){ const ta = document.createElement("textarea"); ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); done(); } catch(e) { toast("Não deu para copiar"); } ta.remove(); }
   }
   Object.keys(KIT).forEach(id => $(id).addEventListener("click", () => copyText(KIT[id])));
+  const CONVERSA = [["Respondeu: pode mandar", "Que bom, [nome]! Vou ser rápido: o Treinamentos em Dia lê a planilha da empresa e mostra na hora quem está em dia, quem vai vencer e quem falta fazer cada NR. Os certificados entram de uma vez, em PDF ou foto, e o sistema avisa no WhatsApp antes de vencer.\n\nO jeito mais fácil de entender é ver funcionando. Posso te mostrar em 15 minutos por chamada de vídeo, hoje à tarde ou amanhã de manhã. Qual fica melhor?"], ["Sem resposta: 2 dias", "Oi, [nome], tudo bem? Passando só para saber se conseguiu ver minha mensagem. Hoje, como você controla os vencimentos das NRs dos seus clientes: planilha ou algum sistema?"], ["Sem resposta: 5 dias", "[nome], uma dúvida rápida: quantas empresas você atende hoje? Pergunto porque, a partir de umas 3, controlar NR em planilha costuma dar dor de cabeça na reciclagem."], ["Sem resposta: 10 dias (última)", "[nome], não quero ser chato, então essa é minha última mensagem. Se um dia quiser testar, são 7 dias grátis, sem cartão: treinamentosemdia.com.br. Sucesso aí!"], ["Já uso planilha ou sistema", "Faz sentido, a maioria começa assim. A diferença é que aqui você não digita nada: envia os certificados e o sistema lê nome, NR e data sozinho. E ainda gera o certificado com QR code e um link para a empresa cliente acompanhar sozinha.\n\nTopa testar 7 dias com uma empresa só? Se não ganhar tempo, você continua com o que já usa."], ["Quanto custa?", "O plano Consultoria é R$ 197 por mês. Mas estou com o preço de Fundador para os 10 primeiros clientes: R$ 47 por mês, travado enquanto a assinatura estiver ativa. Restam poucas vagas.\n\nE antes de pagar qualquer coisa, você testa 7 dias grátis. Quer que eu te ajude a colocar a primeira empresa?"], ["Agora não tenho tempo", "Tranquilo, entendo bem. Posso te chamar na [dia]? São só 15 minutos, e eu mesmo coloco a planilha de uma empresa sua no sistema para você já ver com seus dados."], ["Confirmar demonstração", "Oi, [nome]! Confirmando nossa conversa às [hora]. Se puder, separe a planilha de funcionários de um cliente, que eu já mostro com ela."], ["Teste grátis: dia 1", "Conta criada! Primeiro passo: em Treinamentos, toque em Lista da empresa e envie a planilha. Qualquer dúvida, me chama aqui."], ["Teste grátis: dia 3", "E aí, conseguiu colocar a lista e os certificados? Quer que eu faça junto com você por chamada?"], ["Teste grátis: dia 6", "Amanhã termina seu teste. Se fizer sentido, garanto o preço de Fundador de R$ 47 por mês para você. Posso mandar o link de pagamento?"], ["Fechamento", "Fechado então! Esse é o link do plano Fundador: [link]. Assim que cair o pagamento, sua conta é liberada na hora e eu te ajudo a colocar as outras empresas."]];
+  $("kitConv").innerHTML = CONVERSA.map((c, i) => `<button data-cv="${i}">${esc(c[0])}</button>`).join("");
+  $("kitConv").addEventListener("click", e => { const b = e.target.closest("button[data-cv]"); if (b) copyText(CONVERSA[+b.dataset.cv][1]); });
 
   // ---------- atualiza textos antigos da rotina (mantém o que você personalizou) ----------
   (function migrateRoutine(){
