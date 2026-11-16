@@ -134,6 +134,7 @@
   .client .acts button{flex:1;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 6px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
   .client .acts button.go{background:var(--accent);border-color:var(--accent);color:#06210f}
   .client .acts button.x{flex:0 0 40px;color:var(--muted)}
+  .client .acts .lk{flex:1;text-align:center;text-decoration:none;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 6px;font-size:12.5px;font-weight:600}
   .chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-top:10px}
   .chk input{width:18px;height:18px;accent-color:#22c55e}
   .form{display:grid;gap:8px}
@@ -236,6 +237,12 @@
       </div>
       <label class="chk"><input type="checkbox" id="cCount" checked> Contar como abordagem de hoje</label>
       <button class="btn" id="cAdd" style="width:100%;margin-top:10px">Adicionar</button>
+    </div>
+    <div class="card">
+      <h2>Lista para abordar <small id="prCount"></small></h2>
+      <p class="hint" style="margin:0 0 10px">Consultorias de SST encontradas na internet. Abra o WhatsApp ou o Instagram, mande a mensagem e toque em <b>Abordei</b>: o contato entra no funil e conta na meta do dia.</p>
+      <div id="prosp"></div>
+      <button class="btn ghost" id="prMais" style="width:100%;margin-top:4px">Ver mais</button>
     </div>
     <div class="filters" id="cFilters"></div>
     <div id="clients"></div>
@@ -685,6 +692,69 @@
     persist(); renderClients();
   });
 
+  // ---------- lista para abordar ----------
+  // w: WhatsApp/telefone (só números com DDD), ig: Instagram, c: cidade, o: observação. Dados públicos encontrados na internet em 16/11/2026: confira antes de mandar.
+  const PROSP = [
+    {id:"p01", n:"Resgate Vertical Engenharia SSMA", c:"Porto Velho - RO", w:"69993212121", o:"Cursos NR-35, NR-33, NR-10 · contato@resgatevertical.com.br"},
+    {id:"p02", n:"Lotus Medicina e Segurança do Trabalho", c:"Porto Velho - RO", w:"69992160603", ig:"lotusmedicinaeseguranca", o:"Também em Candeias do Jamari · outro número (69) 99916-2812"},
+    {id:"p03", n:"LPB Consultoria Ambiental e Segurança do Trabalho", c:"Porto Velho - RO", w:"69999872286", o:"Rua Guiana, 2736, Embratel · outro número (69) 99280-6408"},
+    {id:"p04", n:"MR2 Segurança do Trabalho e Meio Ambiente", c:"Porto Velho - RO", w:"6932211678", o:"Telefone fixo · mr2consultoria@yahoo.com.br"},
+    {id:"p05", n:"Engemede SSO Engenharia de Segurança", c:"Porto Velho - RO", o:"Av. Carlos Gomes, Centro · procure o WhatsApp no Google"},
+    {id:"p06", n:"PVH Consultoria em Segurança do Trabalho", c:"Porto Velho - RO", o:"Rua Abunã, 3521, Olaria · faz treinamentos e brigada"},
+    {id:"p07", n:"Ocupacional Safety", c:"Porto Velho - RO", o:"Rua Rafael Vaz e Silva, 3150, Liberdade · tem página no Facebook"},
+    {id:"p08", n:"Real Life Engenharia de SSMA", c:"Porto Velho - RO", o:"Av. Sete de Setembro, 1925, sala 06"},
+    {id:"p09", n:"I.S.C. Consultoria e Engenharia", c:"Porto Velho - RO", o:"Rua Sérgio Carvalho, 4962, Castanheira"},
+    {id:"p10", n:"PROTEC Segurança do Trabalho", c:"Porto Velho - RO", o:"Rua da Paz, 780, Lagoinha"},
+    {id:"p11", n:"CIESE Centro de Instrução em Segurança", c:"Porto Velho - RO", o:"Av. Amazonas, 4170 · escola de cursos"},
+    {id:"p12", n:"Norsergel Cursos", c:"Porto Velho - RO", o:"Rua Duque de Caxias, 1960, São Cristóvão · escola de cursos"},
+    {id:"p13", n:"Cristian Baldissera Engenheiro de Segurança", c:"Porto Velho - RO", o:"Engenheiro de segurança autônomo"},
+    {id:"p14", n:"AVRO Avaliações e Perícias", c:"Porto Velho - RO", o:"Laudos e perícias"},
+    {id:"p15", n:"GTX Engenharia", c:"Jaru - RO", o:"Consultoria em segurança do trabalho"},
+    {id:"p16", n:"CAP Consultoria em Segurança do Trabalho", c:"Cidade a confirmar", ig:"capsegurancadotrabalho"},
+    {id:"p17", n:"Prime Ocupacional", c:"Cidade a confirmar", ig:"prime_ocupacional", o:"Segurança do trabalho e medicina ocupacional"},
+    {id:"p18", n:"Eseg Segurança do Trabalho", c:"Cidade a confirmar", ig:"eseg.sst"},
+    {id:"p19", n:"OPUS Segurança do Trabalho", c:"Cidade a confirmar", ig:"opussegurancadotrabalho"},
+    {id:"p20", n:"Prevenire SST", c:"Cidade a confirmar", ig:"prevenire.consultoria"},
+    {id:"p21", n:"ASTEC Consultoria", c:"Cidade a confirmar", ig:"astec.consultoria"},
+    {id:"p22", n:"Torres Consultoria e Engenharia", c:"Cidade a confirmar", ig:"torresconsultoria.e"},
+    {id:"p23", n:"ES Consultoria e Treinamentos", c:"Cidade a confirmar", ig:"esconsultorias"},
+    {id:"p24", n:"Proseg Segurança do Trabalho", c:"Cidade a confirmar", ig:"prosegtreinamentos", o:"Treinamentos"},
+    {id:"p25", n:"MAPE Medicina e Segurança do Trabalho", c:"Cidade a confirmar", ig:"mapesegurancadotrabalho"},
+    {id:"p26", n:"Segfor Consultoria", c:"Cidade a confirmar", ig:"segforconsultoria"},
+    {id:"p27", n:"Scopo Treinamentos", c:"Cidade a confirmar", ig:"scopotreinamentos", o:"Treinamentos"},
+    {id:"p28", n:"RL Treinamento", c:"Cidade a confirmar", ig:"rl.treinamento", o:"Treinamentos"}
+  ];
+  let prVer = 5;
+  function renderProsp(){
+    const feito = state.prosp || {};
+    const rest = PROSP.filter(p => !feito[p.id]);
+    $("prCount").textContent = rest.length ? rest.length + " para abordar" : "";
+    $("prosp").innerHTML = rest.length ? rest.slice(0, prVer).map(p => {
+      const msg = encodeURIComponent(KIT.kitCons);
+      const links = [];
+      if (p.w) links.push(p.w.length === 11 ? `<a class="lk" href="https://wa.me/55${p.w}?text=${msg}" target="_blank" rel="noopener">WhatsApp</a>` : `<a class="lk" href="tel:+55${p.w}">Ligar</a>`);
+      if (p.ig) links.push(`<a class="lk" href="https://instagram.com/${p.ig}" target="_blank" rel="noopener">Instagram</a>`);
+      if (!p.w && !p.ig) links.push(`<a class="lk" href="https://www.google.com/search?q=${encodeURIComponent(p.n + " " + p.c + " whatsapp")}" target="_blank" rel="noopener">Buscar contato</a>`);
+      const tel = p.w ? "(" + p.w.slice(0,2) + ") " + p.w.slice(2, -4) + "-" + p.w.slice(-4) : "";
+      return `<div class="client"><div class="nm">${esc(p.n)}<span class="tp cons">Consultoria</span></div><div class="nt">${esc(p.c)}${tel ? " · " + tel : ""}${p.ig ? " · @" + esc(p.ig) : ""}${p.o ? "\n" + esc(p.o) : ""}</div>
+        <div class="acts">${links.join("")}<button class="go" data-pa="ok" data-id="${p.id}">Abordei</button><button data-pa="skip" data-id="${p.id}">Pular</button></div></div>`;
+    }).join("") : '<p class="hint" style="text-align:center;padding:10px 0">Lista concluída. Peça uma nova lista de consultorias.</p>';
+    $("prMais").hidden = rest.length <= prVer;
+  }
+  $("prMais").addEventListener("click", () => { prVer += 5; renderProsp(); });
+  $("prosp").addEventListener("click", e => {
+    const b = e.target.closest("button[data-pa]"); if (!b) return;
+    const p = PROSP.find(x => x.id === b.dataset.id); if (!p) return;
+    state.prosp = state.prosp || {};
+    if (b.dataset.pa === "ok") {
+      const tel = p.w ? "WhatsApp " + p.w : ""; const note = [p.c, tel, p.ig ? "@" + p.ig : ""].filter(Boolean).join(" · ");
+      state.clients = state.clients || [];
+      state.clients.push({id:"k"+Date.now(), n:p.n, tp:"cons", note, st:0, v:0, u:Date.now(), d:todayKey()});
+      day().p++; state.prosp[p.id] = "ok"; toast("Abordado! Entrou no funil");
+    } else { state.prosp[p.id] = "skip"; toast("Pulado"); }
+    persist(); renderProsp(); renderClients(); renderToday();
+  });
+
   // ---------- backup ----------
   function renderBackupInfo(){ const t = state.lastBackup; $("bkInfo").textContent = t ? "Último backup: " + new Date(t).toLocaleDateString("pt-BR",{day:"numeric",month:"long"}) : "Nenhum backup feito ainda."; }
   $("bkDown").addEventListener("click", () => {
@@ -752,7 +822,7 @@
   function show(v){
     document.querySelectorAll(".view").forEach(s => s.classList.toggle("on", s.id === "v-"+v));
     document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.v === v));
-    if (v === "hoje") renderToday(); if (v === "metas") renderGoals(); if (v === "domingo") renderReview(); if (v === "prog") renderProg(); if (v === "clientes") renderClients(); if (v === "ajustes") renderSettings();
+    if (v === "hoje") renderToday(); if (v === "metas") renderGoals(); if (v === "domingo") renderReview(); if (v === "prog") renderProg(); if (v === "clientes") { renderClients(); renderProsp(); } if (v === "ajustes") renderSettings();
     window.scrollTo(0,0);
   }
   document.querySelectorAll("nav button").forEach(b => b.addEventListener("click", () => show(b.dataset.v)));
