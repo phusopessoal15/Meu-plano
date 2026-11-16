@@ -134,6 +134,10 @@
   .client .acts button{flex:1;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 6px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
   .client .acts button.go{background:var(--accent);border-color:var(--accent);color:#06210f}
   .client .acts button.x{flex:0 0 40px;color:var(--muted)}
+  .pr-row{display:flex;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+  .pr-row input[type=text]{flex:1;min-width:0}
+  .pr-row input[type=checkbox]{width:20px;height:20px;flex:0 0 20px}
+  .pr-row small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .client .acts .lk{flex:1;text-align:center;text-decoration:none;background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 6px;font-size:12.5px;font-weight:600}
   .chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-top:10px}
   .chk input{width:18px;height:18px;accent-color:#22c55e}
@@ -237,6 +241,9 @@
       </div>
       <label class="chk"><input type="checkbox" id="cCount" checked> Contar como abordagem de hoje</label>
       <button class="btn" id="cAdd" style="width:100%;margin-top:10px">Adicionar</button>
+      <button class="btn ghost" id="cPrint" style="width:100%;margin-top:8px">Adicionar abordagens por print</button>
+      <input type="file" id="cPrintFile" accept="image/*" multiple hidden>
+      <div id="cPrintBox"></div>
     </div>
     <div class="card">
       <h2>Lista para abordar <small id="prCount"></small></h2>
@@ -832,6 +839,64 @@
   renderAll();
   if (new Date().getDay() === 0) setTimeout(() => toast("Hoje é domingo: faça sua revisão"), 800);
   setInterval(renderHeader, 60000);
+
+  // ---------- abordagens por print (lê o print do WhatsApp) ----------
+  const OCR_URL = "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js";
+  function carregaOCR(){ return window.Tesseract ? Promise.resolve() : new Promise((ok, erro) => { const sc = document.createElement("script"); sc.src = OCR_URL; sc.onload = ok; sc.onerror = () => erro(new Error("sem internet")); document.head.appendChild(sc); }); }
+  const RX_TEL = /\+?\s*55\s*\(?(\d{2})\)?\s*(9?\s?\d{4})[\s.-]?(\d{4})/;
+  const RX_FIM = /\s+(?:[«»]?\s*\d{1,2}[:.]\d{2}|\d{1,2}\/\d{1,2}\/\d{2,4}|ontem|hoje|\d{1,2})\s*$/i;
+  const RUIDO = /^(conversas|liga[cç][oõ]es|atualiza[cç][oõ]es|ferramentas|comunidades|pesquisar|arquivadas|todas|n[aã]o lidas|favoritas|grupos|whatsapp|voc[eê]:)/i;
+  function lerPrint(txt){
+    const ls = txt.split(/\n/).map(l => l.trim()).filter(Boolean), out = [];
+    for (let i = 0; i < ls.length; i++) {
+      const l = ls[i], prox = ls[i+1] || "";
+      const tel = l.match(RX_TEL);
+      let titulo = l.replace(RX_FIM, "").trim();
+      if (tel) {
+        if (/reagiu com/i.test(l)) continue;
+        const w = "(" + tel[1] + ") " + tel[2].replace(/\s/g, "") + "-" + tel[3];
+        out.push({n: "+55 " + tel[1] + " " + tel[2].replace(/\s/g, "") + "-" + tel[3], w, prev: prox});
+        continue;
+      }
+      const temHora = RX_FIM.test(l), previa = /sou o paulo|ol[aá],? tudo bem|treinamen|mensagem de voz/i.test(prox);
+      titulo = titulo.replace(/^[^A-Za-zÀ-ÿ0-9+]+/, "").replace(/^[a-z]{1,4}[,.]\s+/, "").trim();
+      if (!titulo || titulo.length < 3 || RUIDO.test(titulo) || /pesquisar|^voc[eê]\b/i.test(titulo) || /sou o paulo|ol[aá],? tudo bem|mensagem de voz|reagiu com|\.\.\.$/i.test(titulo)) continue;
+      if (!/[A-Za-zÀ-ÿ]{3}/.test(titulo)) continue;
+      if (temHora || previa) out.push({n: titulo, w: "", prev: prox});
+    }
+    return out;
+  }
+  function revisarPrint(achados){
+    const so = x => String(x||"").replace(/\D/g, ""), vistos = new Set(), lst = [];
+    achados.forEach(a => { const k = a.w ? so(a.w) : a.n.toLowerCase(); if (vistos.has(k)) return; vistos.add(k);
+      const ja = (state.clients||[]).some(c => c.n === a.n || (a.w && so(c.note).indexOf(so(a.w)) !== -1));
+      a.ja = ja; a.ok = !ja && /sou o paulo|ol[aá],? tudo bem|mensagem de voz/i.test(a.prev); lst.push(a); });
+    const box = $("cPrintBox");
+    if (!lst.length) { box.innerHTML = '<p class="hint" style="margin-top:10px">Não achei contatos nesse print. Tente um print da lista de conversas do WhatsApp.</p>'; return; }
+    box.innerHTML = '<p class="hint" style="margin:12px 0 4px">Achei ' + lst.length + ' contato(s). Já marquei quem recebeu a sua mensagem de apresentação. Confira os nomes e toque em Adicionar.</p>' +
+      lst.map((a, i) => `<div class="pr-row"><input type="checkbox" data-pi="${i}"${a.ok ? " checked" : ""}${a.ja ? " disabled" : ""}><div style="flex:1;min-width:0"><input type="text" data-pn="${i}" value="${esc(a.n)}"><small>${a.ja ? "já está no seu funil" : esc(a.prev || "")}</small></div></div>`).join("") +
+      '<div class="row" style="margin-top:10px"><button class="btn ghost" id="cPrintX" style="flex:1">Cancelar</button><button class="btn" id="cPrintOk" style="flex:2">Adicionar como Abordado</button></div>';
+    $("cPrintX").onclick = () => { box.innerHTML = ""; };
+    $("cPrintOk").onclick = () => {
+      const sel = lst.map((a, i) => ({a, i})).filter(({i}) => box.querySelector(`[data-pi="${i}"]`).checked);
+      if (!sel.length) { toast("Marque pelo menos um contato"); return; }
+      state.clients = state.clients || [];
+      sel.forEach(({a, i}, k) => { const n = box.querySelector(`[data-pn="${i}"]`).value.trim() || a.n;
+        state.clients.push({id: "k" + Date.now() + "_" + k, n, tp: cType, note: a.w ? "WhatsApp " + a.w : "", st: 0, v: 0, u: Date.now(), d: todayKey()}); });
+      day().p += sel.length; persist(); box.innerHTML = ""; renderClients(); renderToday(); toast(sel.length + " abordagem(ns) adicionada(s)");
+    };
+  }
+  $("cPrint").addEventListener("click", () => $("cPrintFile").click());
+  $("cPrintFile").addEventListener("change", async e => {
+    const fs = [...(e.target.files || [])]; e.target.value = ""; if (!fs.length) return;
+    const box = $("cPrintBox"); box.innerHTML = '<p class="hint" style="margin-top:10px">Lendo o print… (a primeira vez demora um pouco mais)</p>';
+    try {
+      await carregaOCR();
+      const wk = await Tesseract.createWorker("por"); let achados = [];
+      for (let i = 0; i < fs.length; i++) { box.innerHTML = '<p class="hint" style="margin-top:10px">Lendo o print ' + (i+1) + ' de ' + fs.length + '…</p>'; const r = await wk.recognize(fs[i]); achados = achados.concat(lerPrint(r.data.text || "")); }
+      await wk.terminate(); revisarPrint(achados);
+    } catch(err) { box.innerHTML = '<p class="hint" style="margin-top:10px">Não consegui ler o print. Verifique a internet e tente de novo.</p>'; }
+  });
 
   // ---------- importar contatos por link (#importar=...) ----------
   // Formato: lista de {n:nome, w:WhatsApp, o:observação, tp:"cons"|"tst"|"emp", st:0..4, d:"aaaa-mm-dd"}
