@@ -833,6 +833,30 @@
   if (new Date().getDay() === 0) setTimeout(() => toast("Hoje é domingo: faça sua revisão"), 800);
   setInterval(renderHeader, 60000);
 
+  // ---------- importar contatos por link (#importar=...) ----------
+  // Formato: lista de {n:nome, w:WhatsApp, o:observação, tp:"cons"|"tst"|"emp", st:0..4, d:"aaaa-mm-dd"}
+  (function(){
+    const m = location.hash.match(/^#importar=(.+)$/); if (!m) return;
+    let lst; try { lst = JSON.parse(decodeURIComponent(m[1])); } catch(e) { toast("Link de importação inválido"); return; }
+    try { history.replaceState(null, "", location.pathname); } catch(e) {}
+    if (!Array.isArray(lst) || !lst.length) return;
+    lst = lst.map(c => Array.isArray(c) ? {n:c[0], w:c[1], o:c[2]} : c);
+    state.clients = state.clients || [];
+    const so = x => String(x||"").replace(/\D/g, "");
+    const novos = lst.filter(c => c && c.n && !state.clients.some(k => k.n === c.n || (c.w && so(k.note).indexOf(so(c.w)) !== -1)));
+    if (!novos.length) { toast("Esses contatos já estão no seu funil"); show("clientes"); return; }
+    if (!confirm("Adicionar " + novos.length + " contato(s) ao funil de clientes?" + (lst.length > novos.length ? "\n(" + (lst.length - novos.length) + " já estavam lá)" : ""))) return;
+    let hoje = 0;
+    novos.forEach((c, i) => {
+      const note = [c.w ? "WhatsApp " + c.w : "", c.o || ""].filter(Boolean).join(" · ");
+      const st = Math.max(0, Math.min(4, +c.st || 0)), d = c.d || todayKey();
+      state.clients.push({id:"k" + Date.now() + "_" + i, n:c.n, tp:c.tp || "cons", note, st, v:0, u:Date.now(), d});
+      if (d === todayKey()) hoje++;
+    });
+    if (hoje) day().p += hoje;
+    persist(); show("clientes"); renderToday(); toast(novos.length + " contato(s) adicionado(s)");
+  })();
+
   // ---------- salvamento local ----------
   setSync("Salvo no aparelho", true);
   try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e) {}
